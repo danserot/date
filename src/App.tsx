@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { AnimatePresence, MotionConfig, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { ArrowLeft, Heart, Mail, X } from 'lucide-react'
 import { invitation, screenOrder, type Screen } from './config/invitation'
 import { useInvitation } from './hooks/useInvitation'
+import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion'
 import { EnvelopeScreen } from './components/EnvelopeScreen'
 import { LetterScreen } from './components/LetterScreen'
 import { PhotoScreen } from './components/PhotoScreen'
@@ -11,6 +12,7 @@ import { DateDetailsScreen } from './components/DateDetailsScreen'
 import { QuestionnaireScreen } from './components/QuestionnaireScreen'
 import { FinalScreen } from './components/FinalScreen'
 import { FloatingHearts } from './components/FloatingHearts'
+import { HeartBursts } from './components/HeartBursts'
 import { MusicToggle } from './components/MusicToggle'
 
 const order: readonly Screen[] = screenOrder
@@ -19,7 +21,7 @@ export default function App() {
   const [closed, setClosed] = useState(false)
   const [notice, setNotice] = useState('')
   const main = useRef<HTMLElement>(null)
-  const reduced = useReducedMotion()
+  const reduced = usePrefersReducedMotion()
   const index = order.indexOf(screen)
   const go = useCallback((next: Screen) => { setScreen(next) }, [setScreen])
   const next = useCallback(() => { setScreen(current => order[Math.min(order.indexOf(current) + 1, order.length - 1)]) }, [setScreen])
@@ -32,7 +34,7 @@ export default function App() {
     return () => window.clearTimeout(timer)
   }, [notice])
   useEffect(() => { if (storageError) setNotice(invitation.texts.storageUnavailable) }, [storageError])
-  return <MotionConfig reducedMotion="user">
+  return <MotionConfig reducedMotion={reduced ? 'always' : 'never'}>
     <div className={`app ${screen === 'final' && !closed ? 'final-theme' : ''}`}>
       <a className="skip-link" href="#main">К приглашению</a>
       <header className="site-header">
@@ -43,7 +45,8 @@ export default function App() {
           {!closed && <button className="icon-button close-button" aria-label={invitation.texts.close} title={invitation.texts.close} onClick={() => setClosed(true)}><X size={17} /></button>}
         </div>
       </header>
-      <FloatingHearts />
+      <FloatingHearts paused={closed} />
+      <HeartBursts active={!closed} />
       <main id="main" ref={main}>
         <AnimatePresence mode="wait" initial={false}>
           <motion.div className="screen-container" key={closed ? 'closed' : screen}

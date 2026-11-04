@@ -3,6 +3,7 @@ import { Download, Heart, Send } from 'lucide-react'
 import { invitation, type Answers } from '../config/invitation'
 import { exportInvitation, telegramShareUrl } from '../lib/exportInvitation'
 import { DateCard } from './DateCard'
+import { FloatingHearts } from './FloatingHearts'
 
 interface Props { answers: Answers; onEdit: () => void; onNotice: (text: string) => void }
 export function FinalScreen({ answers, onEdit, onNotice }: Props) {
@@ -14,6 +15,7 @@ export function FinalScreen({ answers, onEdit, onNotice }: Props) {
     finally { setSaving(false) }
   }
   return <section className="screen final-screen">
+    <FloatingHearts celebration />
     <div className="final-heart" aria-hidden="true"><Heart size={30} strokeWidth={1} /></div>
     <p className="eyebrow">{invitation.texts.finalEyebrow}</p>
     <h1><em>{invitation.name},</em><br />{invitation.texts.final}</h1>
