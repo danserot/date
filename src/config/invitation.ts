@@ -1,11 +1,11 @@
 // Всё, что делает это приглашение вашим, собрано здесь.
-// В URL файлов папка public не указывается: public/images → /images.
+// Vite добавляет префикс публикации: /images локально, /date/images на GitHub Pages.
 export const invitation = {
   name: 'Оля',
   cafe: 'Сюрприз ♡',
   time: 'После 19:00',
-  photo: '/images/our-photo.jpg',
-  music: '/music/background.mp3',
+  photo: `${import.meta.env.BASE_URL}images/our-photo.jpg`,
+  music: `${import.meta.env.BASE_URL}music/background.mp3`,
   storageKey: 'a-little-date-for-olya:v1',
   brand: 'a little date',
   texts: {
